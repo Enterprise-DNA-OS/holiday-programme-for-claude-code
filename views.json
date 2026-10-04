@@ -5,7 +5,12 @@
     "sections": [
       {
         "title": "Session readiness",
-        "sql": "select * from session_readiness order by starts_at"
+        "sql": "select programme, session, starts_at, booked, waiting, capacity from session_readiness order by starts_at"
+      },
+      {
+        "title": "Staff coverage",
+        "sql": "select session,staff_count,children_per_staff,first_aiders from session_readiness where status='scheduled' order by starts_at",
+        "note": "Each roster entry means full-session coverage. Times shown are UTC."
       },
       {
         "title": "Collection and attendance",
