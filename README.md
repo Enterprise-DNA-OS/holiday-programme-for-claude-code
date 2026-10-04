@@ -1,115 +1,135 @@
-<h1 align="center">Holiday Programme for Claude Code</h1>
+# Holiday Programme for Claude Code
 
-<p align="center">
-  <strong>The open-source holiday programme and kids activity system that is just a database and Claude Code.</strong>
-</p>
+Know who is booked, who arrived, who collected them and what needs attention.
+Built by [Enterprise DNA](https://enterprisedna.co).
 
-<p align="center">
-  Created by <a href="https://www.enterprisedna.co"><strong>Enterprise DNA</strong></a>. Free and open source. Works with Claude Code, Codex, OpenCode or Cursor.
-</p>
+| Do it yourself | We customise it | We run it for you |
+| --- | --- | --- |
+| Free under the MIT licence. Install the database and commands. | Your enrolment fields, programme rules, document layouts and Enrolmy export mapping. A web front end or another stack when needed. | Installed, connected and operated through Omni by Enterprise DNA. One setup fee, then a retainer. |
+| [Quick start](#quick-start) | [Get your version built](https://enterprisedna.co/omni/book?offer=replace-software&utm_medium=github&utm_campaign=enrolmy) | [Book a call](https://enterprisedna.co/omni/book?offer=replace-software&utm_medium=github&utm_campaign=enrolmy) |
 
-<!-- three-doors -->
-<table align="center">
-  <tr>
-    <td align="center"><strong>Do it yourself</strong><br/>Clone it, run it, own it. Free, MIT.<br/><a href="#quick-start">Quick start</a></td>
-    <td align="center"><strong>We customise it</strong><br/>Your fields, your rules, your Enrolmy data brought across.<br/><a href="https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=enrolmy">Book a call</a></td>
-    <td align="center"><strong>We run it for you</strong><br/>Installed, connected and operated inside Omni. Setup fee, then a retainer.<br/><a href="https://enterprisedna.co/omni/instead-of/enrolmy?utm_source=github&utm_medium=readme&utm_campaign=enrolmy">How it works</a></td>
-  </tr>
-</table>
+Works with Claude Code, Codex, OpenCode or Cursor. Read [AGENTS.md](AGENTS.md).
 
-<p align="center">
-  <a href="#what-is-this">What is this</a> &bull;
-  <a href="#why-no-front-end">Why no front end</a> &bull;
-  <a href="#quick-start">Quick start</a> &bull;
-  <a href="#the-commands">Commands</a> &bull;
-  <a href="#instead-of-enrolmy">Instead of Enrolmy</a> &bull;
-  <a href="#want-it-installed-and-run-for-you">Installed for you</a> &bull;
-  <a href="#license">License</a>
-</p>
+## What is here
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Node-20+-339933?style=flat-square" alt="Node 20+" />
-  <img src="https://img.shields.io/badge/PostgreSQL-any-336791?style=flat-square" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PGlite-embedded-3ecf8e?style=flat-square" alt="PGlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
-</p>
+Thirteen record types hold families, children, contacts, programmes, sessions, bookings, attendance, staff, rosters, incidents, invoices, drills and notes. Three database views feed the programme plan, daily roll and family balances. Ten analysis questions join those records. Five document types produce attendance registers, emergency lists, incident records, family statements and drill records in your brand.
 
----
+The office operator plans sessions, checks staff coverage, manages a waitlist, enters actual attendance, records authorised collection, reviews incidents and prepares balance reminders. Nothing sends, collects money or claims government funding. A trusted operator can use the base alongside the programme's physical attendance and emergency procedures.
 
-## What is this
-
-Holiday Programme for Claude Code does the job you pay Enrolmy for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the Enrolmy dashboard cannot.
-
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays Enrolmy per year, all in, with a source. -->
-
-Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=enrolmy).
-
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
-
-## Why no front end
-
-- The front end was only ever there because the database was hard to talk to. That is no longer true.
-- Your data sits in plain Postgres tables you own. Any tool can read them. No export, no lock-in.
-- No seats, no tiers, no add-ons. Read [docs/why-no-front-end.md](docs/why-no-front-end.md) for the honest trade-offs too.
+Children's details and medical instructions belong in a private database with appropriate operator access. This base grants its operator access to the whole database. It has no parent portal, staff logins, immutable audit trail, offline kiosk or electronic signature service. Enterprise DNA scopes those additions with you. Static reports are confidential snapshots.
 
 ## Quick start
 
-Sixty seconds, no database install (an embedded Postgres runs inside Node):
+Node 20 or later, Windows or Linux:
 
 ```bash
 git clone https://github.com/Enterprise-DNA-OS/holiday-programme-for-claude-code.git
 cd holiday-programme-for-claude-code
 npm install
+npm test
 npm run demo
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
+The demo creates fictional records in `.data/demo`, even if a team database is configured. It never seeds that team database. Demo dates are relative to the day the seed first runs. To explore it, put `DATA_DIR=.data/demo` in a local `.env` with no DATABASE_URL, or set the equivalent process environment. Repeated seed runs preserve existing rows.
 
-### Use it with your own Postgres or Supabase
-
-Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same commands, shared data, no per-seat fee.
-
-## The commands
-
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
-
-| Command | What it does |
-|---|---|
-| `/...` | ... |
-
-## Instead of enrolmy
-
-<!-- TODO(author): how to bring data across from Enrolmy; link docs/replace-enrolmy.md -->
-
-## Architecture
-
-```
-holiday-programme-for-claude-code/
-  CLAUDE.md                 how the operator wants this run (routing table + house rules)
-  AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
-  .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
-  scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
-  supabase/migrations/      plain SQL schema
-  supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
+```bash
+npm run holiday -- session-plan
+npm run holiday -- pickup-check
+npm run holiday -- compliance --json
+npm run holiday -- insights
+npm run view
+npm run docs
 ```
 
-## Built for coding agents
+For real records, use a fresh DATA_DIR and `npm run migrate` without seed. For shared Postgres set DATABASE_URL in your environment or a gitignored .env. Remote TLS certificates are verified. Do not commit records or credentials. Back up the database and source archives before changes.
 
-The database, CLI and command recipes work with Claude Code, Codex, OpenCode or Cursor. Ask your coding agent for a new command and have it implement and test the change against the same records.
+HTML goes to views/ and docs-out/. Use brand.json for your business name, colours and an absolute file or HTTPS logo URL. Documents are snapshots. Times in reports are UTC. Programme boundaries use Pacific/Auckland. Read [docs/cli.md](docs/cli.md) before writes.
 
-## Contributing
+## Recurring commands
 
-Issues and pull requests are welcome. Keep the shape: plain SQL, a small CLI, a slash command per recurring job, no front end.
+| Command | Job |
+| --- | --- |
+| `/families` | Read family contact and account records. |
+| `/children` | Read children and their recorded instructions. |
+| `/contacts` | Read emergency contacts and authorised collectors. |
+| `/programmes` | Read the holiday programme calendar. |
+| `/sessions` | Read session times, capacities and local staffing ratios. |
+| `/bookings` | Read confirmed, waitlisted and cancelled bookings. |
+| `/session-plan` | Plan the next sessions from capacity, waiting lists and staff cover. |
+| `/roll-call` | Compare actual attendance with confirmed bookings. Never infer presence from a booking. |
+| `/pickup-check` | Find missing collection records and unexplained absences in finished sessions. Follow the programme procedures immediately when a child is unaccounted for. |
+| `/waitlist` | Review waiting children in booking order. Promotion requires an operator instruction and available capacity. |
+| `/staff-cover` | Check rostered coverage against each session ratio and first aid expiry dates. The roster assumes staff cover the entire session. |
+| `/incident-follow-up` | Review open incidents and recorded parent acknowledgements. Never invent a notification or acknowledgement. |
+| `/balances` | Review recorded family balances and overdue invoices. Do not collect payments. |
+| `/attention` | Find missed collections, unexplained absences, overdue follow-ups and balances. |
+| `/compliance` | Read docs/compliance.md, then report record gaps with their sources. These checks do not certify a programme. |
+| `/insights` | Answer one or all ten cross-record questions with current evidence. |
+| `/add` | Read docs/cli.md. Add only operator-supplied facts. Use the field dictionary and resolve references first. |
+| `/update` | Read the full record first. Update only supplied facts. Attendance changes use the named attendance jobs. |
+| `/check-in` | Record the actual arrival time with timezone and the person recording it. Do not default to booked times. |
+| `/check-out` | Read the child instructions and authorised contact first. Confirm the actual collection with the operator. The command checks contact authorisation, not the identity of the person standing at the door. |
+| `/absent` | Record the supplied explanation and staff member only after the programme has confirmed the absence. |
+| `/log` | Save the operator note under the family without sending anything. |
+| `/weekly-review` | Write the Monday review from session-plan, attention and compliance. Prioritise child record gaps before administrative work. |
+| `/draft-reminder` | Draft a balance reminder using actual overdue invoices. Review family notes first. Never send. |
+| `/import` | Read docs/replace-enrolmy.md. Inspect the exported headers and mapping, run the test import first, compare counts, then apply the reviewed import. |
+| `/export` | Export a consistent snapshot to a new private file. It contains confidential child records. Do not commit or upload it. |
+| `/documents` | Render attendance, emergency contacts, incident records, family statements and drill records. Share only with authorised staff. |
+| `/view` | Render read-only dashboards and give the operator the local paths. These are snapshots. |
+| `/new-view` | Read views.json and the database views. Add a read-only report for the requested question, render it and inspect the result. |
+| `/customise` | Back up first. Translate the requested field or rule into a new migration and update the CLI, tests and command docs. Apply it and run the tests. Never modify an applied migration. |
 
-## Want it installed and run for you?
+## Ten questions across your records
 
-Enterprise DNA installs Holiday Programme for Claude Code for your business, migrates your Enrolmy data, connects it to the rest of your tools, and runs it for you as part of **Omni**, our managed Command Center. One setup fee, then a monthly retainer.
+Run `npm run holiday -- insights` or select a number. These are specific queries this build answers today, not an unsupported claim that Enrolmy can never produce a similar answer.
 
-- Book a call: [enterprisedna.co/omni/book](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=enrolmy)
-- Read more: [enterprisedna.co/omni/instead-of/enrolmy](https://enterprisedna.co/omni/instead-of/enrolmy?utm_source=github&utm_medium=readme&utm_campaign=enrolmy)
+1. Which upcoming sessions have a waiting list and no spare places?
+2. Which upcoming sessions need more rostered staff under our own ratio?
+3. Which booked children have fewer than two contact people?
+4. Which children have no authorised collection contact?
+5. Which finished sessions still have children recorded on site?
+6. Which expected arrivals in past sessions remain unexplained?
+7. Which open incidents have no record that the parent was informed?
+8. Which families owe money and also have future confirmed bookings?
+9. Which upcoming sessions lack a rostered first aider with a current certificate?
+10. Which confirmed children need their enrolment details reviewed before returning?
 
-## License
+## Your first hour: ten things to ask for
 
-MIT. Copyright (c) 2026 Enterprise DNA.
+1. Add our next holiday programme and venue.
+2. Set our session dates, capacities and approved staffing ratios.
+3. Add our staff and certificate review dates.
+4. Map a small reviewed sample of our Enrolmy family export.
+5. Review each child's contact and collection permissions.
+6. Show tomorrow's staff cover and waiting list.
+7. Print the emergency contacts for our next outing.
+8. Find the incidents missing a parent acknowledgement.
+9. Put our name and logo on the family statements.
+10. Add the one enrolment field we keep in a separate spreadsheet.
+
+Use `/customise` for fields and rules, and `/new-view` for a read-only report. Changes use new migrations and tests.
+
+## Bringing Enrolmy records across
+
+Enrolmy documents exports, but its public help does not promise one fixed full-record CSV layout. This build imports reviewed families, children, contacts, bookings and invoice CSVs through a column map. It requires stable identifiers. The examples are fictional mapping fixtures. A test run validates every row and rolls back. Repeated imports update matching external identifiers. Invalid later rows roll back the entire file.
+
+```bash
+node scripts/holiday.mjs import enrolmy --kind=families --file=examples/enrolmy/families.csv --dry-run
+```
+
+After review, remove `--dry-run` to apply it. Read [docs/replace-enrolmy.md](docs/replace-enrolmy.md) for sources, mappings and boundaries. Source attachments, signatures, historic attendance, payment mandates and subsidy claims do not transfer automatically. The one-command import follows export preparation, not a guaranteed whole-business switch in a day.
+
+## Evidence checks, not accreditation
+
+`/compliance` checks selected OSCAR record requirements and separately labelled local rules. Sources and limits are in [docs/compliance.md](docs/compliance.md). Bookings never become attendance automatically. Check-out requires a recorded collector authorised for that child. People still verify identity, staff presence and the child's safety. Staffing recommendations are not presented as universal legal ratios.
+
+[Why no front end](docs/why-no-front-end.md) explains the office workflow and what a parent or front-desk service needs.
+
+## Validation and ownership
+
+`npm test` uses an isolated temporary database, ignoring your configured production database. It tests migrations, idempotent seeds, all reads and writes, invalid collection, capacity, imports, rollback, exports, drafts, documents and views. CI runs Node 20 and 22 on Windows and Linux, plus Postgres 16. Set HOLIDAY_TEST_POSTGRES_URL only for an explicitly disposable test service. The suite creates and removes its own schema there.
+
+MIT licence. No Enrolmy affiliation. Hosting and coding-agent subscriptions are separate costs. Exported JSON is an open snapshot, not an automatic restore service. Test your recovery process before relying on it.
+
+[Talk to Sam for 30 minutes](https://enterprisedna.co/omni/book?offer=replace-software&utm_medium=github&utm_campaign=enrolmy). Omni by Enterprise DNA builds and runs your version for a setup fee, then a retainer.

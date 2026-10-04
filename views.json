@@ -1,13 +1,25 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Holiday Programme for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Programme week",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Session readiness",
+        "sql": "select * from session_readiness order by starts_at"
+      },
+      {
+        "title": "Collection and attendance",
+        "sql": "select session,child,attendance_state,signed_in_at,signed_out_at from daily_roll order by starts_at,child"
+      }
+    ]
+  },
+  {
+    "name": "balances",
+    "title": "Family balances",
+    "sections": [
+      {
+        "title": "Outstanding invoices",
+        "sql": "select family,currency,balance_cents,overdue_cents,earliest_due from family_balances order by overdue_cents desc"
       }
     ]
   }

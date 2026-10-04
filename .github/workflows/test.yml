@@ -1,0 +1,44 @@
+name: Holiday programme workflows
+on: [push, pull_request]
+jobs:
+  smoke:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [20, 22]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run demo
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: holiday_test
+          POSTGRES_PASSWORD: holiday_test
+          POSTGRES_DB: holiday_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U holiday_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+        env:
+          HOLIDAY_TEST_POSTGRES_URL: postgresql://holiday_test:holiday_test@localhost:5432/holiday_test?sslmode=disable

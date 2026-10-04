@@ -1,11 +1,75 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "session-register",
+    "title": "Session attendance register",
+    "for_each": "select id,name from sessions order by starts_at",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Session",
+        "sql": "select name,starts_at,ends_at,status from sessions where id=$1",
+        "note": "Times are UTC. Record actual attendance only. This is a snapshot, not a live sign-in screen."
+      },
+      {
+        "title": "Roll",
+        "sql": "select child,attendance_state,signed_in_at,signed_in_by,signed_out_at,collected_by from daily_roll where session_id=$1 order by child"
+      }
+    ]
+  },
+  {
+    "name": "emergency-list",
+    "title": "Session emergency and collection list",
+    "for_each": "select id,name from sessions order by starts_at",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Children and instructions",
+        "sql": "select c.name,c.medical_notes,c.medication_instructions,c.medication_plan,c.court_order_notes,c.safety_plan from bookings b join children c on c.id=b.child_id where b.session_id=$1 and b.status='confirmed' order by c.name",
+        "note": "Confidential. Give only to staff who need these records. Regenerate before an excursion."
+      },
+      {
+        "title": "Contacts",
+        "sql": "select c.name as child,co.name as contact,co.phone,co.relationship,co.authorised_pickup from bookings b join children c on c.id=b.child_id join contacts co on co.child_id=c.id where b.session_id=$1 and b.status='confirmed' order by c.name,co.name"
+      }
+    ]
+  },
+  {
+    "name": "incident-report",
+    "title": "Incident record for review",
+    "for_each": "select id,details as name from incidents order by occurred_at",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Recorded incident",
+        "sql": "select c.name as child,s.name as session,i.occurred_at,i.location,i.details,i.injury,i.treatment,st.name as staff,i.parent_informed_at,i.confirmation,i.follow_up_due,i.status from incidents i join bookings b on b.id=i.booking_id join children c on c.id=b.child_id join sessions s on s.id=b.session_id join staff st on st.id=i.staff_id where i.id=$1",
+        "note": "A recorded acknowledgement is evidence supplied by the operator, not an electronic signature created by this software."
+      }
+    ]
+  },
+  {
+    "name": "family-statement",
+    "title": "Family account statement",
+    "for_each": "select id,name from families order by name",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Invoices",
+        "sql": "select name,issued_on,due_on,currency,total_cents,paid_cents,total_cents-paid_cents as balance_cents from invoices where family_id=$1 and status='open' order by due_on",
+        "note": "Recorded balances only. No payment collection, bank reconciliation or subsidy claims."
+      }
+    ]
+  },
+  {
+    "name": "drill-record",
+    "title": "Programme drill record",
+    "for_each": "select id,name from programmes order by starts_on",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Drills",
+        "sql": "select name,occurred_at,notes,recorded_by from drills where programme_id=$1 order by occurred_at",
+        "note": "An empty record means no drill has been entered. Do not infer that a drill occurred."
+      }
     ]
   }
 ]

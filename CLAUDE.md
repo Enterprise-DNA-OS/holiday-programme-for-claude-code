@@ -1,43 +1,64 @@
 # Holiday Programme for Claude Code: operating instructions
 
-This file is the brain. Claude Code reads it at the start of every session. It says who this is for, how work gets done, and the one right way to do each recurring job.
+For the programme owner and trusted office staff. Read README.md and docs/cli.md first. The database is the source of truth. Demo children and adults are fictional.
 
-## Who this is for
+## Business context
 
-- **Business:** [YOUR BUSINESS]
-- **Operator:** [YOUR NAME], [your role]
-- **What matters most:** [the one or two outcomes you care about]
+Record your business name, operator, programme policies and document recipients before using real records. This is one trusted database access boundary. Separate unrelated providers into separate databases.
 
-Fill this in once. A worker with context knows. A worker without it guesses.
+## Routing
 
-## How to work
+| Job | Command |
+| --- | --- |
+| Read family contact and account records | `/families` |
+| Read children and their recorded instructions | `/children` |
+| Read emergency contacts and authorised collectors | `/contacts` |
+| Read the holiday programme calendar | `/programmes` |
+| Read session times, capacities and local staffing ratios | `/sessions` |
+| Read confirmed, waitlisted and cancelled bookings | `/bookings` |
+| Plan the next sessions from capacity, waiting lists and staff cover | `/session-plan` |
+| Compare actual attendance with confirmed bookings | `/roll-call` |
+| Find missing collection records and unexplained absences in finished sessions | `/pickup-check` |
+| Review waiting children in booking order | `/waitlist` |
+| Check rostered coverage against each session ratio and first aid expiry dates | `/staff-cover` |
+| Review open incidents and recorded parent acknowledgements | `/incident-follow-up` |
+| Review recorded family balances and overdue invoices | `/balances` |
+| Find missed collections, unexplained absences, overdue follow-ups and balances | `/attention` |
+| Read docs/compliance | `/compliance` |
+| Answer one or all ten cross-record questions with current evidence | `/insights` |
+| Read docs/cli | `/add` |
+| Read the full record first | `/update` |
+| Record the actual arrival time with timezone and the person recording it | `/check-in` |
+| Read the child instructions and authorised contact first | `/check-out` |
+| Record the supplied explanation and staff member only after the programme has confirmed the absence | `/absent` |
+| Save the operator note under the family without sending anything | `/log` |
+| Write the Monday review from session-plan, attention and compliance | `/weekly-review` |
+| Draft a balance reminder using actual overdue invoices | `/draft-reminder` |
+| Read docs/replace-enrolmy | `/import` |
+| Export a consistent snapshot to a new private file | `/export` |
+| Render attendance, emergency contacts, incident records, family statements and drill records | `/documents` |
+| Render read-only dashboards and give the operator the local paths | `/view` |
+| Read views | `/new-view` |
+| Back up first | `/customise` |
 
-1. **Take a brief, not a script.** The operator describes the outcome. You run the right command and present the answer.
-2. **Read before you write.** Before drafting anything about a record, read its full history first.
-3. **Plain language.** Short sentences. No filler. Numbers in tables.
-4. **Silent success, loud problems.** No play-by-play. Say what broke and what you did about it.
-5. **Stop at the line.** Anything that sends, deletes, or faces a customer waits for a yes in this session.
+## Rules
 
-## Routing table: one right way for each recurring job
+- Never send messages or collect payments. Draft to drafts/ for a person to review.
+- Read the child instructions, court order notes and safety plan before collection work. Software cannot identify a collector or supervise children.
+- Never infer attendance from a booking. Enter only actual times and supplied evidence.
+- No subsidy claims, government funding calculations, payroll or payment processing.
+- Read before writes. Resolve ambiguous names through the CLI and show candidates.
+- Preserve attendance history. Corrections need an explicit operator instruction, an exported backup and a documented new migration or reviewed database correction. Do not overwrite them through generic update.
+- Do not delete records without explicit instruction. Retention and disclosure policies belong to the operator.
+- Read docs/compliance.md before interpreting findings. These are evidence checks, not accreditation.
+- Staff roster rows mean full-session coverage. Do not treat partial shifts as full coverage.
+- Database access includes all families and medical records. There are no staff or parent logins, row permissions or immutable audit logs in this base.
+- Keep exports, generated documents, database files and drafts out of Git. Store them privately.
+- Schema changes use new migrations and meaningful tests. Stay on main. Commit source only.
+- Plain words, no em dashes or buzzwords.
 
-| When the operator asks for... | Use this |
-|---|---|
-| <!-- TODO(author): one row per slash command --> | `/...` |
+## Data locations
 
-If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) and then propose a new command for it.
+DATABASE_URL selects shared Postgres. Otherwise DATA_DIR selects embedded PGlite storage, default .data/db. The demo always uses .data/demo and never seeds the configured team database. HTML goes to views/ and docs-out/, draft messages to drafts/. All are snapshots or drafts.
 
-## Hard rules
-
-- Never send email or messages from here. Draft to `drafts/`, a person sends.
-- Never delete records without an explicit yes in this session. Prefer marking closed or archived.
-- Never invent a record. If a name is ambiguous, list the candidates and ask.
-- The database is the source of truth. If the answer is not in it, say so.
-
-## Where things live
-
-- `scripts/` the CLI. `scripts/lib/db.mjs` picks `DATABASE_URL` (Postgres, Supabase) or the embedded database in `.data/`.
-- `supabase/migrations/` the schema, plain SQL. `npm run migrate` applies it.
-- `.claude/commands/` the slash commands. Add one every time the same ask comes twice.
-- `docs/` the thesis and the guide for moving off Enrolmy.
-
-Built by Enterprise DNA. Installed and run for you as part of Omni: https://enterprisedna.co/omni/instead-of/enrolmy
+Omni by Enterprise DNA: https://enterprisedna.co/omni/instead-of/enrolmy
